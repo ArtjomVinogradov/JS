@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sündmused</title>
+    <style>
+        .error-message {
+            color: red;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="container">
+        <br>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title mt-2">Registreeri</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="myForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="firstName">Eesnimi</label>
+                                    <input type="text" class="form-control" id="firstName" required="required" minlength="2" oninput="validateName('firstName')">
+                                    <small id="firstNameVal" class="form-text text-muted error-message"></small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="lastName">Perekonnanimi</label>
+                                    <input type="text" class="form-control" id="lastName" required="required" minlength="2" oninput="validateName('lastName')">
+                                    <small id="lastNameVal" class="form-text text-muted error-message"></small>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email">E-posti aadress</label>
+                                <input type="email" class="form-control" id="email" required="required" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" oninput="validateEmail()">
+                                <small id="emailVal" class="form-text text-muted error-message"></small>
+                            </div>
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary">Registreeri</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        function validateName(fieldName) {
+            const input = document.getElementById(fieldName);
+            const errorField = document.getElementById(`${fieldName}Val`);
+            const nameRegex = /^[a-zA-Z]+$/;
+
+            if (input.value.length < 3 || !nameRegex.test(input.value)) {
+                errorField.textContent = "Nimi peab olema vähemalt 3 tähemärki pikk ja sisaldama ainult tähti.";
+            } else {
+                errorField.textContent = "";
+            }
+        }
+
+        function validateEmail() {
+            const emailInput = document.getElementById("email");
+            const emailErrorField = document.getElementById("emailVal");
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+            if (!emailRegex.test(emailInput.value)) {
+                emailErrorField.textContent = "Sisestage korrektne e-posti aadress.";
+            } else {
+                emailErrorField.textContent = "";
+            }
+        }
+
+        document.getElementById("myForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+        });
+    </script>
+
+</body>
+</html>
