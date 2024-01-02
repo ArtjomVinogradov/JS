@@ -1,45 +1,67 @@
-const looList = callback => {
-    const req = new XMLHttpRequest();
-    const url = " https://dummyjson.com/products";
- 
-    req.addEventListener('readystatechange', () => {
-        if (req.readyState === 4 && req.status === 200) {
-            //console.log(req.responseText);
-            const data = JSON.parse(req.responseText);
-            //console.log(data.todos);
-            callback(null, data.todos);
-        } else if (req.readyState === 4) {
-            //console.log("Probleem andmetega");
-            callback("Probleem andmetega", null);
-        }
+function fetchData() {
+    return new Promise((resolve, reject) => {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "https://dummyjson.com/products", true);
+
+        xhr.onload = function () {
+            if (xhr.status == 200) {
+                try {
+                    var response = JSON.parse(xhr.responseText);
+
+                    if (Array.isArray(response.products)) {
+                        resolve(response.products);
+                    } else {
+                        reject("Vale formaat: Oodati massiivi, kuid saadi: " + typeof response.products);
+                    }
+                } catch (error) {
+                    reject("Viga parsimisel: " + error.message);
+                }
+            } else {
+                reject("Päring ebaõnnestus. Staatus: " + xhr.status);
+            }
+        };
+
+        xhr.send();
     });
- 
-    req.open("GET", url);
-    req.send();
-};
- 
-looList((err, data) => {
-    if (err) {
-        console.log(err);
-    } else {
-        //console.log(data);
-        const container = document.getElementById("vastusekast");
- 
-        data.forEach(todo => {
-            const listItem = document.createElement("li");
-            listItem.className = "list-group-item d-flex justify-content-between align-items-center";
- 
-            listItem.innerHTML = `
-            Todo #${todo.id} (User: ${todo.userId}) - ${todo.todo}
-            <span class="badge bg-${todo.completed
-                ? 'success'
-                : 'danger'}">
-                ${todo.completed
-                    ? 'OK'
-                    : 'Lõpetamata'}
-            </span>
-        `;
-            container.appendChild(listItem);
+}
+
+function displayProducts(products) {
+            var productContainer = document.getElementById("product-container");
+
+            // Võtan ainult esimesed 10 toodet
+            var firstTenProducts = products.slice(0, 10);
+
+            firstTenProducts.forEach(function (product) {
+                var cardHtml = `
+                    <div class="col-md-4">
+                        <div class="card mb-2 box-shadow">
+                            <img class="card-img-top" src="https://pcbros.tech/cdn/shop/products/PXL_20220407_135813056.PORTRAIT.jpg?v=1649355485&width=3979" alt="${product.name}">
+                            <div class="card-body">
+                                <h5 class="card-title">${product.name}</h5>
+                                <p class="card-text">${product.description}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price">${product.price}</span>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Lisa ostukorvi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+    
+                productContainer.innerHTML += cardHtml;
+            });
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    fetchData()
+        .then((products) => {
+            return displayProducts(products);
+        })
+        .then((message) => {
+            console.log(message);
+        })
+        .catch((error) => {
+            console.error("Viga:", error);
         });
-    }
 });
