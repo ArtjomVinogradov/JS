@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bootstrap Demo</title>
+  <!-- Lisage Bootstrapi stiilid -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Boostrapi kaardid kuvatakse siin -->
+<div id="quoteCardsContainer" class="container mt-5"></div>
+
+<script>
+  const packageJsonUrl = 'https://dummyjson.com/quotes';
+
+  // Lae package.json andmed
+  fetch(packageJsonUrl)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Failed to fetch quotes: ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then(quotesData => {
+      if (typeof quotesData === 'object' && quotesData.quotes) {
+        // Kutsu funktsiooni kaartide loomiseks ja näitamiseks
+        displayQuotes(quotesData.quotes);
+      } else {
+        throw new Error('Invalid quotes data format.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+
+
+  function displayQuotes(quotesData) {
+    // Kontainer kuhu kaardid lisatakse
+    const container = document.getElementById('quoteCardsContainer');
+
+    // Loop läbi iga tsitaat
+    quotesData.forEach(quote => {
+      // Bootstrap kaart loomine
+      const card = document.createElement('div');
+      card.classList.add('card', 'mb-3');
+
+      // Kaardi sisu tuleb võta package Json-st
+      card.innerHTML = `
+        <div class="card-body">
+          <h5 class="card-title">${quote.quote}</h5>
+          <p class="card-text">${quote.author}</p>
+          <p class="card-id">${quote.id}</p>
+        </div>
+      `;
+
+      // Lisa kaart konteinerisse
+      container.appendChild(card);
+    });
+  }
+
+
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+
+</body>
+</html>
